@@ -12,6 +12,6 @@ public interface StudentInfoMapper {
 
     public Student getStudentById(long id);
 
-    public List<HashMap<String, Object>> getAllStudents();
+    public List<Student> getAllStudents();
 
 }

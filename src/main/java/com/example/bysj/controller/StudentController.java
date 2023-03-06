@@ -18,9 +18,15 @@ public class StudentController {
 
     @GetMapping("/get")
     @ResponseBody
-    public Object getStudentList(){
-        List<HashMap<String, Object>> list = studentInfoMapper.getAllStudents();
+    public List<Student> getStudentList(){
+        List<Student> list = studentInfoMapper.getAllStudents();
         System.out.println("666");
         return list;
+    }
+    @GetMapping("/getbyid")
+    @ResponseBody
+    public Student getStudentById(@RequestParam("id") long id){
+        Student student = studentInfoMapper.getStudentById(id);
+        return student;
     }
 }
