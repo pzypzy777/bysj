@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/TestInfo")
+@CrossOrigin
 public class TestInfoController {
     @Autowired
     private TestInfoMapper testInfoMapper;

@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/student")
+@CrossOrigin
 public class StudentController {
     @Autowired
     private StudentInfoMapper studentInfoMapper;
@@ -20,7 +21,6 @@ public class StudentController {
     @ResponseBody
     public List<Student> getStudentList(){
         List<Student> list = studentInfoMapper.getAllStudents();
-        System.out.println("666");
         return list;
     }
     @GetMapping("/getbyid")

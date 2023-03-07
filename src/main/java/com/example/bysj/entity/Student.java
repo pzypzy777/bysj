@@ -18,7 +18,7 @@ public class Student {
 
     private String name;
 
-    private String sex;
+    private Integer sex;
 
     private String classroom;
 
