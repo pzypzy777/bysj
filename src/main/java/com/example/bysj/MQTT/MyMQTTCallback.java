@@ -31,7 +31,7 @@ public class MyMQTTCallback implements MqttCallbackExtended {
 //    @Autowired
 //    private RedisTemplateService redisTemplateService
 //
-    private RedisTemplateService redisTemplateService = SpringUtils.getBean(RedisTemplateService.class);;
+    private RedisTemplateService redisTemplateService = SpringUtils.getBean(RedisTemplateService.class);
     /**
      * 丢失连接，可在这里做重连
      * 只会调用一次
