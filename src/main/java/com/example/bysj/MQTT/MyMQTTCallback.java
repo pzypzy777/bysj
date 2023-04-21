@@ -71,19 +71,20 @@ public class MyMQTTCallback implements MqttCallbackExtended {
     @Override
     public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
         log.info("接收消息主题 : {}，接收消息内容 : {}", topic, new String(mqttMessage.getPayload()));
-        //发布消息主题
+        //接收设备1主题
         if (topic.equals("device/1")){
             Map maps = (Map) JSON.parse(new String(mqttMessage.getPayload(), CharsetUtil.UTF_8));
             System.out.println(maps.get("msg"));
             //todo
+            redisTemplateService.set("msg",maps.get("msg"));
 
         }
-        //接收报警主题
+        //接收设备2主题
         if (topic.equals("device/2")){
             Map maps = (Map) JSON.parse(new String(mqttMessage.getPayload(), CharsetUtil.UTF_8));
             System.out.println(maps.get("msg"));
             //todo
-            redisTemplateService.set("msg",123);
+            redisTemplateService.set("msg",maps.get("msg"));
         }
     }
 
