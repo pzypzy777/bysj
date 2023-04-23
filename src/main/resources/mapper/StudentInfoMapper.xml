@@ -9,4 +9,14 @@
     <select id="getStudentById" parameterType="long" resultType="com.example.bysj.entity.Student">
         SELECT * FROM student WHERE ID = #{id}
     </select>
+    <select id="getStudentsBySex" parameterType="long" resultType="com.example.bysj.entity.Student">
+        SELECT * FROM student WHERE sex = #{sex}
+    </select>
+    <select id="getStudentsByName" parameterType="String" resultType="com.example.bysj.entity.Student">
+        SELECT * FROM student WHERE name like CONCAT('%', #{name}, '%')
+    </select>
+
+    <update id="bindBraceletId" parameterType="long">
+        UPDATE student SET bracelet_id=1 WHERE id=#{id}
+    </update>
 </mapper>

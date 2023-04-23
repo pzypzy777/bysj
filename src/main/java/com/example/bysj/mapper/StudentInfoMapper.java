@@ -14,4 +14,9 @@ public interface StudentInfoMapper {
 
     public List<Student> getAllStudents();
 
+    public List<Student> getStudentsBySex(long sex);
+
+    public List<Student> getStudentsByName(String name);
+
+    public Boolean bindBraceletId(long id);
 }

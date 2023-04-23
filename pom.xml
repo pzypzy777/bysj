@@ -99,6 +99,11 @@
             <version>2.4</version>
             <classifier>jdk15</classifier>
         </dependency>
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>Base64</artifactId>
+            <version>1.1.0</version>
+        </dependency>
 
 
     </dependencies>

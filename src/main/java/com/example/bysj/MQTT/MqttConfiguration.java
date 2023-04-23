@@ -41,11 +41,6 @@ public class MqttConfiguration {
         for (int i = 0; i < 10; i++) {
             try {
                 myMQTTClient.connect();
-                //不同的主题
-                //   myMQTTClient.subscribe(topic1, 1);
-                //   myMQTTClient.subscribe(topic2, 1);
-                //   myMQTTClient.subscribe(topic3, 1);
-                //   myMQTTClient.subscribe(topic4, 1);
                 return myMQTTClient;
             } catch (MqttException e) {
                 log.error("MQTT connect exception,connect time = " + i);

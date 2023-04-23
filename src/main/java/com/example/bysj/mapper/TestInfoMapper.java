@@ -8,4 +8,6 @@ import org.apache.ibatis.annotations.Select;
 public interface TestInfoMapper {
 
     public Bracelet getTestInfoById(long id);
+
+    public boolean setState();
 }

@@ -2,6 +2,8 @@ package com.example.bysj.MQTT;
 
 import cn.hutool.core.util.CharsetUtil;
 import com.alibaba.fastjson.JSON;
+import com.example.bysj.mapper.StudentInfoMapper;
+import com.example.bysj.mapper.TestInfoMapper;
 import lombok.Data;
 import org.eclipse.paho.client.mqttv3.*;
 import org.slf4j.Logger;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.example.bysj.service.RedisTemplateService;
 import org.springframework.stereotype.Service;
 
+import java.util.Base64;
 import java.util.Map;
 
 /**
@@ -23,6 +26,9 @@ public class MyMQTTCallback implements MqttCallbackExtended {
 
     private static final Logger log = LoggerFactory.getLogger(MyMQTTCallback.class);
 
+    private StudentInfoMapper studentInfoMapper = SpringUtils.getBean(StudentInfoMapper.class);
+
+    private TestInfoMapper testInfoMapper = SpringUtils.getBean(TestInfoMapper.class);
     private MyMQTTClient myMQTTClient;
 
     public MyMQTTCallback(MyMQTTClient myMQTTClient) {
@@ -72,19 +78,31 @@ public class MyMQTTCallback implements MqttCallbackExtended {
     public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
         log.info("接收消息主题 : {}，接收消息内容 : {}", topic, new String(mqttMessage.getPayload()));
         //接收设备1主题
-        if (topic.equals("device/1")){
+        if (topic.equals("v3/798313762/devices/eui-81fa12f400004061/up")){
             Map maps = (Map) JSON.parse(new String(mqttMessage.getPayload(), CharsetUtil.UTF_8));
-            System.out.println(maps.get("msg"));
+            String frmPayload = (String) ((Map) maps.get("uplink_message")).get("frm_payload");
+            byte[] decodedBytes = Base64.getDecoder().decode(frmPayload);
+            String decodedString = new String(decodedBytes);
+            String firstTwoChars = decodedString.substring(0, 2);
+            if (firstTwoChars.equals("00")) {
+                // 设置血氧和心率
+                testInfoMapper.setState();
+            }else if (firstTwoChars.equals("01") && decodedString.substring(2, 3) == "1") {
+                // 设置状态为跌倒
+                testInfoMapper.setState();
+            }
             //todo
             redisTemplateService.set("msg",maps.get("msg"));
 
         }
-        //接收设备2主题
-        if (topic.equals("device/2")){
+        //接收设备2主题 绑卡
+        if (topic.equals("v3/798313762/devices/eui-81fa12f40000c858/up")){
             Map maps = (Map) JSON.parse(new String(mqttMessage.getPayload(), CharsetUtil.UTF_8));
-            System.out.println(maps.get("msg"));
-            //todo
-            redisTemplateService.set("msg",maps.get("msg"));
+            String frmPayload = (String) ((Map) maps.get("uplink_message")).get("frm_payload");
+            byte[] decodedBytes = Base64.getDecoder().decode(frmPayload);
+            String decodedString = new String(decodedBytes);
+            System.out.println(decodedString);
+            studentInfoMapper.bindBraceletId(Long.parseLong(decodedString));
         }
     }
 
@@ -99,8 +117,8 @@ public class MyMQTTCallback implements MqttCallbackExtended {
     public  void  connectComplete(boolean reconnect,String serverURI){
         log.info("MQTT 连接成功，连接方式：{}",reconnect?"重连":"直连");
         //订阅主题
-        myMQTTClient.subscribe(mqttConfiguration.topic1, 1);
-        myMQTTClient.subscribe(mqttConfiguration.topic2, 1);
+        myMQTTClient.subscribe(mqttConfiguration.topic1, 0);
+        myMQTTClient.subscribe(mqttConfiguration.topic2, 0);
     }
 
     /**

@@ -25,7 +25,7 @@ public class StudentController {
     @ResponseBody
     public List<Student> getStudentList(){
         List<Student> list = studentInfoMapper.getAllStudents();
-        redisTemplateService.set("stu",list);
+//        redisTemplateService.set("stu",list);
         return list;
     }
     @GetMapping("/getbyid")
@@ -33,5 +33,19 @@ public class StudentController {
     public Student getStudentById(@RequestParam("id") long id){
         Student student = studentInfoMapper.getStudentById(id);
         return student;
+    }
+
+    @GetMapping("/getbysex")
+    @ResponseBody
+    public List<Student> getStudentBySex(@RequestParam("sex") long sex){
+        List<Student> list = studentInfoMapper.getStudentsBySex(sex);
+        return list;
+    }
+
+    @GetMapping("/getbyname")
+    @ResponseBody
+    public List<Student> getStudentByName(@RequestParam("name") String name){
+        List<Student> list = studentInfoMapper.getStudentsByName(name);
+        return list;
     }
 }

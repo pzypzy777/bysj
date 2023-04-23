@@ -6,4 +6,8 @@
     <select id="getTestInfoById" parameterType="long" resultType="com.example.bysj.entity.Bracelet">
         SELECT * FROM bracelet WHERE ID = #{id}
     </select>
+
+    <update id="setState">
+        UPDATE bracelet SET state=1 WHERE id=1
+    </update>
 </mapper>
