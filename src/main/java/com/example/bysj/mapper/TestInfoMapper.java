@@ -10,4 +10,6 @@ public interface TestInfoMapper {
     public Bracelet getTestInfoById(long id);
 
     public boolean setState();
+
+    public void updateTestInfoById(long id);
 }

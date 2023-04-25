@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.bysj.mapper.ClassroomInfoMapper">
+    <select id="getClassroomById" parameterType="long" resultType="com.example.bysj.entity.Classroom">
+        select * from classroom where id=#{id}
+    </select>
+</mapper>

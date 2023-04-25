@@ -17,4 +17,5 @@ public class TestInfoController {
     public Bracelet getTestInfo(@RequestParam("id") long id){
         return testInfoMapper.getTestInfoById(id);
     }
+
 }

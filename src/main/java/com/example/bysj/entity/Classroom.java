@@ -5,23 +5,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Component
-public class Student {
+public class Classroom {
     private long id;
 
-    private long bracelet_id;
+    private String class_name;
 
-    private String name;
+    private String teacher_name;
 
-    private Integer sex;
-
-    private long class_id;
-
-    private Date physical_time;
-
+    private String grade;
 }

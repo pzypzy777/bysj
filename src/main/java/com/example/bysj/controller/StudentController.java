@@ -25,6 +25,7 @@ public class StudentController {
     @ResponseBody
     public List<Student> getStudentList(){
         List<Student> list = studentInfoMapper.getAllStudents();
+
 //        redisTemplateService.set("stu",list);
         return list;
     }

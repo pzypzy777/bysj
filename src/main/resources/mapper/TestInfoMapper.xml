@@ -10,4 +10,8 @@
     <update id="setState">
         UPDATE bracelet SET state=1 WHERE id=1
     </update>
+
+    <update id="updateTestInfoById">
+        UPDATE bracelet SET state=1 WHERE id=1
+    </update>
 </mapper>
