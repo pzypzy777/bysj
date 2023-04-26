@@ -12,6 +12,12 @@
     </update>
 
     <update id="updateTestInfoById">
-        UPDATE bracelet SET state=1 WHERE id=1
+        UPDATE bracelet SET
+            blood_oxygen=#{blood_oxygen},
+            max_heart_rate=#{max_heart_rate},
+            min_heart_rate=#{min_heart_rate},
+            avg_heart_rate=#{avg_heart_rate},
+            now_heart_rate=#{now_heart_rate}
+        WHERE id=1
     </update>
 </mapper>
