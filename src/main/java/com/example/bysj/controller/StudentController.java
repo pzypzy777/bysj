@@ -31,9 +31,9 @@ public class StudentController {
     }
     @GetMapping("/getbyid")
     @ResponseBody
-    public Student getStudentById(@RequestParam("id") long id){
-        Student student = studentInfoMapper.getStudentById(id);
-        return student;
+    public List<Student> getStudentById(@RequestParam("id") long id){
+        List<Student> list =  studentInfoMapper.getStudentById(id);
+        return list;
     }
 
     @GetMapping("/getbysex")

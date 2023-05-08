@@ -10,7 +10,7 @@ import java.util.List;
 @Mapper
 public interface StudentInfoMapper {
 
-    public Student getStudentById(long id);
+    public List<Student> getStudentById(long id);
 
     public List<Student> getAllStudents();
 
