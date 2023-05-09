@@ -18,4 +18,11 @@ public class TestInfoController {
         return testInfoMapper.getTestInfoById(id);
     }
 
+    @GetMapping("/checkState")
+    @ResponseBody
+    public String checkState() {
+        String ID=testInfoMapper.checkState();
+        testInfoMapper.setStateZC();
+        return ID;
+    }
 }

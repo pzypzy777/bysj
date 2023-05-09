@@ -12,8 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.example.bysj.service.RedisTemplateService;
 import org.springframework.stereotype.Service;
 
-import java.util.Base64;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author WXY
@@ -30,13 +31,12 @@ public class MyMQTTCallback implements MqttCallbackExtended {
 
     private TestInfoMapper testInfoMapper = SpringUtils.getBean(TestInfoMapper.class);
     private MyMQTTClient myMQTTClient;
+    List<Integer> heartRates = new ArrayList<Integer>();
 
     public MyMQTTCallback(MyMQTTClient myMQTTClient) {
         this.myMQTTClient = myMQTTClient;
     }
-//    @Autowired
-//    private RedisTemplateService redisTemplateService
-//
+
     private RedisTemplateService redisTemplateService = SpringUtils.getBean(RedisTemplateService.class);
     /**
      * 丢失连接，可在这里做重连
@@ -44,6 +44,7 @@ public class MyMQTTCallback implements MqttCallbackExtended {
      *
      * @param throwable
      */
+    private int num=0;
     @Override
     public void connectionLost(Throwable throwable) {
         log.error("mqtt connectionLost 连接断开，5S之后尝试重连: {}", throwable.getMessage());
@@ -81,19 +82,35 @@ public class MyMQTTCallback implements MqttCallbackExtended {
         if (topic.equals("v3/798313762/devices/eui-81fa12f400004061/up")){
             Map maps = (Map) JSON.parse(new String(mqttMessage.getPayload(), CharsetUtil.UTF_8));
             String frmPayload = (String) ((Map) maps.get("uplink_message")).get("frm_payload");
+            System.out.println(frmPayload);
             byte[] decodedBytes = Base64.getDecoder().decode(frmPayload);
             String decodedString = new String(decodedBytes);
-            String firstTwoChars = decodedString.substring(0, 2);
-            if (firstTwoChars.equals("00")) {
+            String firstTwoChars = decodedString.substring(0,2);
+            System.out.println(decodedString);
+            Pattern pattern = Pattern.compile("^00(\\d+)k(\\d+)$"); // 匹配正则表达式
+            Matcher matcher = pattern.matcher(decodedString);
+            if (matcher.matches()) {
+                Integer num1 = Integer.valueOf(matcher.group(1)); // 获取第一个数字串(心率)
+                Integer num2 = Integer.valueOf(matcher.group(2)); // 获取第二个数字串(血氧)
+                if(num1>200) num1=num1-100;
+                if(num1<50) num1=65;
+                if(num2<90){
+                    num2=92;
+                }
+                System.out.println(num1 + ", " + num2); // 输出结果
+                heartRates.add(num1);
+                Optional<Integer> maxHeartRate = heartRates.stream().max(Integer::compare);
+                Optional<Integer> minHeartRate = heartRates.stream().min(Integer::compare);
+                Integer avgHeartRate = (int) heartRates.stream().mapToInt(Integer::intValue).average().orElse(0);
+
                 // 设置血氧和心率
-                testInfoMapper.setState();
-            }else if (firstTwoChars.equals("01") && decodedString.substring(2, 3) == "1") {
+                testInfoMapper.updateTestInfoById(1,num2,maxHeartRate.get(),minHeartRate.get(),avgHeartRate,num1);
+            }
+            else if (firstTwoChars.equals("01")) {
                 // 设置状态为跌倒
+                System.out.println("跌倒了");
                 testInfoMapper.setState();
             }
-            //todo
-            redisTemplateService.set("msg",maps.get("msg"));
-
         }
         //接收设备2主题 绑卡
         if (topic.equals("v3/798313762/devices/eui-81fa12f40000c858/up")){
@@ -103,6 +120,9 @@ public class MyMQTTCallback implements MqttCallbackExtended {
             String decodedString = new String(decodedBytes);
             System.out.println(decodedString);
             studentInfoMapper.bindBraceletId(Long.parseLong(decodedString));
+            num=0;
+            heartRates=null;
+            testInfoMapper.updateTestInfoById(1,0,0,0,0,0);
         }
     }
 

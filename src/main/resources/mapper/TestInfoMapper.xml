@@ -8,7 +8,11 @@
     </select>
 
     <update id="setState">
-        UPDATE bracelet SET state=1 WHERE id=1
+        UPDATE bracelet SET state='跌倒' WHERE id=1
+    </update>
+
+    <update id="setStateZC">
+        UPDATE bracelet SET state='正常' WHERE id=1
     </update>
 
     <update id="updateTestInfoById">
@@ -20,4 +24,8 @@
             now_heart_rate=#{now_heart_rate}
         WHERE id=1
     </update>
+
+    <select id="checkState" resultType="java.lang.String">
+        select id from bracelet where state = '跌倒'
+    </select>
 </mapper>
